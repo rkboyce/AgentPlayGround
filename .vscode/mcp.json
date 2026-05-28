@@ -1,0 +1,9 @@
+{
+	"servers": {
+		"ohdsi_hecate": {
+			"url": "https://hecate.pantheon-hds.com/mcp/sse",
+			"type": "http"
+		}
+	},
+	"inputs": []
+}
