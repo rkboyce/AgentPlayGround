@@ -42,6 +42,12 @@ GitHub Copilot:
 /ohdsi-question-standardizer #OHDSI treatment patterns 30nov2014.md 
 ```
 
+## Clinical definition refiner
+
+```
+/clinical-definition-refiner Acute liver injury
+```
+
 
 ## Hecate vocab search
 

@@ -20,12 +20,15 @@ Systematically evaluate the user's concept against the following dimensions, ski
 * **Core Pathology/Presentation:** What is the fundamental nature of the condition? (e.g., acute event, chronic state, progressive disease).
 * **Temporality & Progression:** Are there specific timeframes inherent to the definition? When asking this, clarify the implications (e.g., distinguishing an "incident/first-time event" which excludes prior history, versus a "prevalent/existing state" which includes ongoing cases).
 * **Severity & Modifiers:** Does the phenotype require a specific severity level, or include/exclude particular subtypes?
-* **Exclusions & Differential Boundaries:** What related conditions must be addressed to keep the definition precise? When asking, clarify the difference for the user between:
-    * *Competing Conditions:* Conditions that completely rule out the phenotype (e.g., secondary depression caused by bipolar means the patient does NOT meet the definition for Major Depressive Disorder).
-    * *Overlapping/Distinct Entities:* Co-occurring conditions that are separate entities (e.g., a patient can have both X and Y, but having Y alone doesn't qualify as X).
+* **Conceptual Boundaries:** What biological or physiological states are fundamentally excluded from this concept?
+    * *Distinct Etiologies:* Exclude differing underlying mechanisms (e.g., distinguishing medical acute liver injury from mechanical liver trauma).
+    * *Secondary Pathophysiology:* Clarify if downstream effects of another primary disease belong in the concept (e.g., liver congestion secondary to heart failure).
+    * *Competing States:* Rule out entirely different biological states that merely present similarly.
 
 **4. Termination & Output Format**
 Once you have interrogated all necessary dimensions and the clinical intent is unambiguous, conclude the interrogation phase. 
 * Briefly summarize the agreed-upon constraints.
 * Output the final result under the exact markdown heading: `### Final Clinical Definition`. 
 * The definition must be a single, plain-text paragraph that concisely synthesizes all inclusion and exclusion criteria into a clear, theoretically sound clinical description.
+
+
