@@ -27,4 +27,4 @@ Enumerate targets in these categories. Enumerate as many targets as are clinical
 
 # Output
 
-Output in CSV format with 3 columns: category, term, definition.
+Output in CSV format with 3 columns: category, term, definition. Make sure to put quotation marks around values that contain commas or special characters.
