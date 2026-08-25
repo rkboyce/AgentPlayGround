@@ -13,17 +13,21 @@ Never send PHI or row-level data. Never invent scope decisions, concept IDs, dom
 
 - Do not infer omitted scope. If the user did not explicitly provide every scope decision, submit only a clarification request with `confirmed_scope: false`.
 - Treat `needs_clarification` and `needs_concept_review` as terminal responses for the current turn. Show the result, ask the user for the missing decision or review, and stop. Do not issue another ACP request in that turn.
-- Do not use `concept_review_mode: "provided_only"` unless a later user message explicitly approves or supplies every concept-set object, including each item's descendant, mapped, and exclusion policies.
-- Do not interpret “continue”, silence, a candidate's rank, or a parent-concept relationship as approval. Never select a candidate or choose `include_descendants` on the user's behalf.
+- Do not use `concept_review_mode: "provided_only"` unless a later user message explicitly supplies the exact reviewed `concept_sets` object or explicitly approves that exact object, including every item's descendant, mapped, and exclusion policies.
+- Tool-execution approval authorizes only the local command. It is never clinical, scope, or concept-set approval.
+- Do not interpret “continue”, silence, a candidate's rank, a parent-concept relationship, or an LLM proposal as approval. Never select a candidate or choose `include_descendants` on the user's behalf.
+- After any ACP request returns a JSON body, do not retry it automatically. Treat the JSON as the response, render it faithfully, and stop when its status requires review. If it cannot be parsed, show the raw body and ask the user whether to retry.
 - Do not emit, save, or display Capr/Circe artifacts before explicit concept-set approval.
 
 ## Workflow
 
 1. Send the narrative-only clarification request below whenever scope is incomplete. Present the returned checklist verbatim enough for the user to decide.
-2. After the user explicitly confirms every scope decision, call with `confirmed_scope: true` and `concept_review_mode: "required"`. Present the candidates with ID, name, domain, vocabulary, and provenance. End the turn.
-3. On a later user message that explicitly provides or approves the reviewed concept-set object, call with `concept_review_mode: "provided_only"`.
-4. If the user explicitly asks for a provisional proposal, use `concept_review_mode: "propose"`; label it unreviewed and end the turn. Never turn that proposal into an artifact.
-5. For `ok`, report the returned Capr source, Circe JSON, validation evidence, provenance, and assumptions. Describe this only as technical validation: R sourced the generated function, Capr wrote Circe JSON, and CirceR generated SQL. Do not claim clinical validity or database-level cohort validation.
+2. Keep `index_event` as the user's plain clinical term (for example, `"Cirrhosis of liver"`). Put event selection only in `entry_limit` (`"First"` or `"All"`); do not rewrite the event as “first qualifying … condition occurrence”. Use that same plain term as the matching key in `criterion_domains`.
+3. After the user explicitly confirms every scope decision, call with `confirmed_scope: true` and `concept_review_mode: "required"`. Count the returned candidates and display **every returned candidate** in one review table with concept ID, name, domain, vocabulary, concept class, and standard/non-standard status. State the count and retrieval provenance. Do not choose or rank a concept. End the turn.
+4. If a client display limit makes a complete table impossible, state exactly `Returned N candidates; showing M of N`, identify which IDs are omitted, and offer to show the remainder. Never describe a partial table as “all candidates.” Do not proceed to selection.
+5. If the user explicitly asks for a provisional LLM proposal, call once with `concept_review_mode: "propose"`. For a successful response, display the complete candidate table, the complete `proposed_plan`, a policy table for every proposed concept-set item, assumptions, warnings, and proposal diagnostics. Label every proposal unreviewed and end the turn. Never turn that proposal into an artifact.
+6. Only on a later user message that supplies or explicitly approves the exact proposed `concept_sets` object, call with `concept_review_mode: "provided_only"`. An approval to run curl or another tool is insufficient.
+7. For `ok`, report the returned Capr source, Circe JSON, validation evidence, provenance, and assumptions. Describe this only as technical validation: R sourced the generated function, Capr wrote Circe JSON, and CirceR generated SQL. Do not claim clinical validity or database-level cohort validation.
 
 ## Request shapes
 
@@ -61,6 +65,8 @@ After explicit scope confirmation, include the complete user-supplied `scope` an
 }
 ```
 
+For a one-call LLM proposal, use the complete confirmed scope, `concept_review_mode: "propose"`, and an empty `concept_sets` list. Its response is review material only; do not resubmit it automatically.
+
 Only after an explicit later approval, submit a **wrapped concept set**, not an item directly in `concept_sets`:
 
 ```json
@@ -72,6 +78,7 @@ Only after an explicit later approval, submit a **wrapped concept set**, not an 
   "concept_sets": [
     {
       "name": "<user-approved name>",
+      "domain": "Condition",
       "items": [
         {
           "concept_id": 123,
