@@ -5,7 +5,7 @@ description: Create a review-gated OHDSI cohort definition from a well-specified
 
 # Phenotype make computable
 
-Call `POST ${STUDY_AGENT_ACP_URL:-http://127.0.0.1:8765}/flows/phenotype_make_computable`. Retain the narrative, confirmed scope, and reviewed concept sets locally and resubmit them in each emission request. Large review sessions are immutable but short-lived; download their review package for durable continuation.
+If the user has not provided a URL for the StudyAgent ACP service,  you must first prompt the user for the url for the StudyAgent ACP service which should be http://<host>:<port> whith <host> as 'localhost', '0.0.0.0', or a remote host and <port> as 8765 or another valid port. If the user is not sure, stop with a message that this tool requires that information. If they provide the url, call `POST ${STUDY_AGENT_ACP_URL:-http://<host>:<port>}/flows/phenotype_make_computable`. Retain the narrative, confirmed scope, and reviewed concept sets locally and resubmit them in each emission request. Large review sessions are immutable but short-lived; download their review package for durable continuation.
 
 Never send PHI or row-level data. Never invent scope decisions, concept IDs, domain policies, or Capr/Circe code.
 
